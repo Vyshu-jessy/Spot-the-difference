@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spot the Difference</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+    .game-container {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .image-wrapper {
+      position: relative;
+      display: inline-block;
+    }
+    .difference {
+      position: absolute;
+      border: 2px solid red;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    #score-board {
+      margin-top: 20px;
+      font-size: 20px;
+    }
+    #timer {
+      font-size: 18px;
+    }
+    @media (max-width: 768px) {
+      .game-container {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1 id="game-title">Spot the Difference</h1>
+  <div id="timer">Time: 0s</div>
+  <div class="game-container">
+    <div class="image-wrapper" id="image1-wrapper"></div>
+    <div class="image-wrapper" id="image2-wrapper"></div>
+  </div>
+  <div id="score-board">Score: 0</div>
+  <script>
+    let gameData;
+    let score = 0;
+    let timer = 0;
+    let found = [];
+
+    fetch('game-config.json')
+      .then(response => response.json())
+      .then(data => {
+        gameData = data;
+        document.getElementById('game-title').textContent = gameData.gameTitle;
+        loadImages();
+        startTimer();
+      });
+
+    function loadImages() {
+      ['image1', 'image2'].forEach((id, index) => {
+        const wrapper = document.getElementById(`${id}-wrapper`);
+        const img = document.createElement('img');
+        img.src = gameData.images[id];
+        img.style.width = '400px';
+        img.style.height = 'auto';
+        img.addEventListener('click', (e) => handleClick(e, wrapper, img));
+        wrapper.appendChild(img);
+      });
+    }
+
+    function handleClick(event, wrapper, img) {
+      const rect = img.getBoundingClientRect();
+      const clickX = event.clientX - rect.left;
+      const clickY = event.clientY - rect.top;
+
+      gameData.differences.forEach((diff, index) => {
+        if (found.includes(index)) return;
+        const scaleX = img.width / img.naturalWidth;
+        const scaleY = img.height / img.naturalHeight;
+
+        const diffX = diff.x * scaleX;
+        const diffY = diff.y * scaleY;
+        const diffW = diff.width * scaleX;
+        const diffH = diff.height * scaleY;
+
+        if (
+          clickX >= diffX && clickX <= diffX + diffW &&
+          clickY >= diffY && clickY <= diffY + diffH
+        ) {
+          found.push(index);
+          drawCircle(wrapper, diffX, diffY, diffW, diffH);
+          updateScore();
+        }
+      });
+    }
+
+    function drawCircle(wrapper, x, y, w, h) {
+      const circle = document.createElement('div');
+      circle.className = 'difference';
+      circle.style.left = `${x}px`;
+      circle.style.top = `${y}px`;
+      circle.style.width = `${w}px`;
+      circle.style.height = `${h}px`;
+      wrapper.appendChild(circle);
+    }
+
+    function updateScore() {
+      score++;
+      document.getElementById('score-board').textContent = `Score: ${score}`;
+      if (score === gameData.differences.length) {
+        alert(`Congratulations! You found all differences in ${timer} seconds.`);
+      }
+    }
+
+    function startTimer() {
+      setInterval(() => {
+        timer++;
+        document.getElementById('timer').textContent = `Time: ${timer}s`;
+      }, 1000);
+    }
+  </script>
+</body>
+</html>
