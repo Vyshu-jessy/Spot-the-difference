@@ -56,7 +56,8 @@ Navigate to the project folder in your terminal.
 
 Run a local server:
 
-bash
+
+
 Copy code
 python -m http.server
 Open your browser and visit:
@@ -66,6 +67,12 @@ Live Demo
 Play the game here:
 https://spot-the-difference-delta.vercel.app
 
+SCREENSHOTS:
+bash![Screenshot 2025-04-13 164902](https://github.com/user-attachments/assets/6079bcac-b973-424c-97a0-3ca9b07694c9)
+![Screenshot 2025-04-13 164937](https://github.com/user-attachments/assets/e287462a-d6b8-444b-84ba-a35250949ad0)
+![Screenshot 2025-04-13 164957](https://github.com/user-attachments/assets/8512993f-a9f7-4100-9899-47db8ddc3e57)
+![Screenshot 2025-04-13 165011](https://github.com/user-attachments/assets/8380c7d3-8398-461e-af83-224f![Screenshot 2025-04-13 165021](https://github.com/user-attachments/assets/2bb0c84d-d49f-495b-b109-7552c9945cd9)
+a2cd3d3c)
 
  Credits
 Created by Vyshu Jessy
